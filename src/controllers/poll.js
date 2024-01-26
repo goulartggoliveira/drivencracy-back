@@ -9,8 +9,14 @@ export async function createPoll(req, res, next) {
 
     try {
         const surveyDate = expireAt || dayjs().add(1, "month").format("YYYY-MM-DD HH:mm")
-        await db.collection("polls").insertOne({ title, expireAt: surveyDate})
-        res.status(201).send("OK")
+
+        const survey = {
+            title: title,
+            expireAt: surveyDate
+        }
+
+        await db.collection("polls").insertOne(survey)
+        res.status(201).send(survey)
     } catch (error) {
         res.status(500).send(error.message);
     }
