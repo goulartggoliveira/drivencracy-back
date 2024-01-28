@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { db } from "../database/db.js";
+import { ObjectId } from "mongodb";
+
 
 
 export async function createPoll(req, res, next) {
@@ -27,3 +29,24 @@ export async function collectPoll(req, res) {
     const surveys = await db.collection("polls").find().toArray();
     res.send(surveys);
 }
+
+export async function choiceIdPoll(req, res) {
+    const pollId = req.params.id;
+
+    const choice = res.locals.choice;
+    const pollCollection = db.collection("polls");
+    const choiceCollection = db.collection("choices");
+
+    try {
+        const survey = await pollCollection.findOne({ _id: ObjectId(pollId) });
+
+        if (!survey) return res.status(404).send("Enquete não existe");
+
+        const choices = await choiceCollection.find({ pollId: ObjectId(pollId) }).toArray();
+        res.send(choices);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+
