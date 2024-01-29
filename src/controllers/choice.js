@@ -33,28 +33,33 @@ export async function choiceIdVote(req, res) {
     const choiceId = req.params.id;
 
     try {
-
+        //Verificar se é uma opção existente, se não existir retornar 404.
         const existingChoice = await db.collection("choices").findOne({ _id: new ObjectId(choiceId) });
         if (!existingChoice) {
             return res.status(404).send("Opção de voto não encontrada.");
         }
-    
 
         const survey = await db.collection("polls").findOne({ _id: new ObjectId(existingChoice.pollId) });
         if (!survey) {
             return res.status(404).send("Enquete não encontrada.");
         }
 
+        //Não pode ser registrado se a enquete já estiver expirado, retornar erro 403.
         if (dayjs(survey.expireAt) < dayjs()) {
             return res.status(403).send("A enquete já expirou. Não é possível registrar o voto.");
         }
-        
+
+        const createdAt = dayjs().format("YYYY-MM-DD HH:mm");
+
         const voteResult = await db.collection("votes").insertOne({
-            choiceId: ObjectId(choiceId),
-            createdAt: dayjs().format("YYYY-MM-DD HH:mm"),
+            createdAt: createdAt,
+            choiceId: new ObjectId(choiceId),
         });
 
-        res.status(201).send(voteResult);
+        res.status(201).send({
+            createdAt: createdAt,
+            choiceId: new ObjectId(choiceId),
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send("Erro ao registrar voto.");
