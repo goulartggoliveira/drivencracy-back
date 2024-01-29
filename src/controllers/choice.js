@@ -49,13 +49,11 @@ export async function choiceIdVote(req, res) {
             return res.status(403).send("A enquete já expirou. Não é possível registrar o voto.");
         }
         
-        // Registrar o voto associando a data e hora da criação no back-end
         const voteResult = await db.collection("votes").insertOne({
             choiceId: ObjectId(choiceId),
             createdAt: dayjs().format("YYYY-MM-DD HH:mm"),
         });
 
-        // Retornar uma resposta adequada
         res.status(201).send("Voto registrado com sucesso.");
     } catch (err) {
         console.error(err);
