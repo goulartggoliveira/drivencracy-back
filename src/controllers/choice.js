@@ -54,7 +54,7 @@ export async function choiceIdVote(req, res) {
             createdAt: dayjs().format("YYYY-MM-DD HH:mm"),
         });
 
-        res.status(201).send("Voto registrado com sucesso.");
+        res.status(201).send(voteResult);
     } catch (err) {
         console.error(err);
         res.status(500).send("Erro ao registrar voto.");
