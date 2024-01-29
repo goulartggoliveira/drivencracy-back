@@ -32,8 +32,6 @@ export async function collectPoll(req, res) {
 
 export async function choiceIdPoll(req, res) {
     const pollId = req.params.id;
-
-    const choice = res.locals.choice;
     const pollCollection = db.collection("polls");
     const choiceCollection = db.collection("choices");
 

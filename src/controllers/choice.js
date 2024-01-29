@@ -19,15 +19,15 @@ export async function choicePoll(req, res) {
 
         if (dayjs(survey.expireAt) < dayjs()) return res.status(403).send("Enquete expirada.");
 
-        // Criar a opção de voto com os dados fornecidos
         const createdChoice = await db.collection("choices").insertOne({ title: choice.title, pollId: ObjectId(choice.pollId) });
 
-        // Retornar diretamente os dados da opção de voto criada
         res.status(201).send(createdChoice);
     } catch (err) {
         console.error(err);
         res.status(500).send("Erro ao criar escolha");
     }
 }
+
+
 
 
