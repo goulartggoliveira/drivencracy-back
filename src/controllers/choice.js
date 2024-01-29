@@ -11,7 +11,7 @@ export async function choicePoll(req, res) {
     }
 
     try {
-        const survey = await db.collection("polls").findOne({ _id: ObjectId(choice.pollId) });
+        const survey = await db.collection("polls").findOne({ _id: new ObjectId(choice.pollId) });
         if (!survey) return res.status(404).send("Uma opção de voto não pode ser inserida sem uma enquete existente.");
 
         const existingChoice = await db.collection("choices").findOne({ title: choice.title });
@@ -19,7 +19,7 @@ export async function choicePoll(req, res) {
 
         if (dayjs(survey.expireAt) < dayjs()) return res.status(403).send("Enquete expirada.");
 
-        const createdChoice = await db.collection("choices").insertOne({ title: choice.title, pollId: ObjectId(choice.pollId) });
+        const createdChoice = await db.collection("choices").insertOne({ title: choice.title, pollId: new ObjectId(choice.pollId) });
 
         res.status(201).send(createdChoice);
     } catch (err) {
@@ -27,7 +27,5 @@ export async function choicePoll(req, res) {
         res.status(500).send("Erro ao criar escolha");
     }
 }
-
-
 
 

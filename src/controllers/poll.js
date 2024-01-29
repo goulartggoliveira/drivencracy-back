@@ -36,11 +36,11 @@ export async function choiceIdPoll(req, res) {
     const choiceCollection = db.collection("choices");
 
     try {
-        const survey = await pollCollection.findOne({ _id: ObjectId(pollId) });
+        const survey = await pollCollection.findOne({ _id: new ObjectId(pollId) });
 
         if (!survey) return res.status(404).send("Enquete não existe");
 
-        const choices = await choiceCollection.find({ pollId: ObjectId(pollId) }).toArray();
+        const choices = await choiceCollection.find({ pollId: new ObjectId(pollId) }).toArray();
         res.send(choices);
     } catch (err) {
         res.status(500).send(err.message);
